@@ -28,7 +28,7 @@ import javax.xml.transform.Result;
 import java.util.Collections;
 import java.util.List;
 
-@Configuration
+//@Configuration
 @Slf4j
 @RequiredArgsConstructor
 public class PlainTextJobConfig {
