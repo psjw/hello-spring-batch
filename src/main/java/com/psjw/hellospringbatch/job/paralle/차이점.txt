@@ -1,0 +1,31 @@
+Multi-threaded Step (single-process) : 멀티 스레드 활용하여 병렬처리 (chunk 단위로 병렬처리) -> 파일이 뒤죽박죽
+
+Parallel Steps (single-process) : 동시에 여러개 스텝 사용 (스텝 단위로 병렬처리) ->속도 차이 없음-> 플로우를 지정하여 동시에 실행
+
+Remote Chunking of Step (multi-process) : 여러개의 서버를 활용하여 처리
+
+Partitioning a Step (single or multi-process) : 스텝을 Partitioning 해서 멀티 프로세스 또는 멀티 스레드 활용 (Manager - Worker) Step을 동시에 실행할때 동시에 실행할께 많거나 동적으로 Step실행(값에 따라 다른 Step을 실행)
+
+
+1. Multi-threaded Step (Single process / Local)
+단일 Step을 수행할 때, 해당 Step 내의 각 Chunk를 별도의 여러 쓰레드에서 실행 하는 방법
+
+2. Parallel Steps (Single Process / Local)
+여러개의 Step을 병렬로 실행하는 방법
+단일 Step의 성능 향상은 없음
+
+3. Remote Chunking (Multi process / Remote)
+일종의 분산환경처럼 Step 처리가 여러 프로세스로 분할되어 외부의 다른 서버로 전송되어 처리하는 방식
+ex) A서버에서 ItemReader 구현체를 사용하여 데이터를 읽고, B 서버에서 ItemWriter 구현체를 갖고 있어 A 서버에서 보낸 데이터를 저장하는 등
+다만, 어느 서버에서 어느 데이터를 처리하고 있는지 메타 데이터 관리를 하지 않기 때문에 메세지 유실이 안되는 것이 100% 보장되어야 한다 (ex: AWS SQS, 카프카 등의 메세지큐 사용을 권장)
+
+4. 파티셔닝 (Partitioning) (Single or Multi process / Local or Remote)
+매니저 (마스터)를 이용해 데이터를 더 작은 Chunk (파티션이라고 함)로 나눈 다음 파티션에서 슬레이브가 독립적으로 작동하는 방식 (이번 시간에 해볼 것)
+슬레이브가 로컬과 원격을 모두 지원하여 확장된 JVM 환경에서의 실행을 해볼 수 있음
+원격 슬레이브와 통신하기 위해 다양한 통신 메커니즘을 지원
+
+AsyncItemProcessor/AsyncItemWriter
+별개의 쓰레드를 통해 ItemProcessor와 ItemWriter를 처리하는 방식
+spring-batch-integration 의존성에서 지원
+주의) AsyncItemProcessor 및 AsyncItemWriter 는 함께 사용해야 함
+그렇지 않으면 AsyncItemProcessor에서 전달한 Future 객체를 본인이 직접 다뤄야 함

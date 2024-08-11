@@ -1,0 +1,6 @@
+AbduKa00	Karim	Abdul-Jabbar	5000
+AbduRa00	Rabih	Abdullah	4900
+AberWa00	Walter	Abercrombie	6500
+AbraDa00	Danny	Abramowicz	7900
+AdamBo00	Bob	Adams	7800
+AdamCh00	Charlie	Adams	4500

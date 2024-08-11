@@ -17,7 +17,7 @@ import org.springframework.context.annotation.Configuration;
 
 import java.time.LocalDate;
 
-@Configuration
+//@Configuration
 @AllArgsConstructor
 @Slf4j
 public class AdvancedJobConfig {
@@ -60,10 +60,28 @@ public class AdvancedJobConfig {
 
     @JobScope
     @Bean
-    public Step advancedStep(Tasklet advancedTasklet) {
+    public Step advancedStep(StepExecutionListener stepExecutionListener, Tasklet advancedTasklet) {
         return stepBuilderFactory.get("advancedStep")
+                .listener(stepExecutionListener)
                 .tasklet(advancedTasklet)
                 .build();
+    }
+
+    @StepScope
+    @Bean
+    public StepExecutionListener stepExecutionListener() {
+        return new StepExecutionListener() {
+            @Override
+            public void beforeStep(StepExecution stepExecution) {
+                log.info("[StepExecutionListener#beforeStep] stepExecution is " + stepExecution.getStatus());
+            }
+
+            @Override
+            public ExitStatus afterStep(StepExecution stepExecution) {
+                log.info("[StepExecutionListener#afterStep] stepExecution is " + stepExecution.getStatus());
+                return stepExecution.getExitStatus();
+            }
+        };
     }
 
     @StepScope
